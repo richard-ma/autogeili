@@ -2,12 +2,12 @@
 
 # =============================================================================
 # File name: autogeili.sh
-# Author: Richard Ma
+# Author: Richard Ma (richard_ma)
 # Gmail: richard.ma.19850509@gmail.com
 # Blog: http://www.richardma.org
 #
 # Google Code:
-#
+# 	http://code.google.com/p/autogeili/
 # Wallpaper Source - WordsMotivate:
 # 	http://www.wordsmotivate.me
 # =============================================================================
@@ -15,7 +15,7 @@
 #
 # Settings
 #
-# Valid value: 
+# Resolution valid value: 
 # 	1920x1200
 #	1920x1080
 #	1600x1200
