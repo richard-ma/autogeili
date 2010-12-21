@@ -17,3 +17,8 @@ apt-get install gconf2
 # Install libnotify-bin for notify-send
 # -----------------------------------------------------------------------------
 apt-get install libnotify-bin
+
+# 
+# Install x11-xserver-utils for xrandr
+# -----------------------------------------------------------------------------
+sudo apt-get install x11-xserver-utils
