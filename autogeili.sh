@@ -22,17 +22,19 @@
 # -----------------------------------------------------------------------------
 resolution=1600x1200
 
+temp_file=.today
+
 #
 # Remove yesterday wallpaper
 # -----------------------------------------------------------------------------
-if [ -e today.jpg ]
+if [ -e $temp_file.jpg ]
 then
-	rm today.jpg
+	rm $temp_file.jpg
 fi
 
-if [ -e today.png ]
+if [ -e $temp_file.png ]
 then
-	rm today.png
+	rm $temp_file.png
 fi
 
 # 
@@ -40,7 +42,7 @@ fi
 # -----------------------------------------------------------------------------
 wget \
 	-c http://img.wordsmotivate.me/`date +%Y.%m`/`date +%Y.%m.%d`_$resolution.jpg \
-       	-O today.jpg
+       	-O $temp_file.jpg
 
 if [ $? -eq 0 ]
 then
@@ -49,7 +51,7 @@ then
 else
 	wget \
 		-c http://img.wordsmotivate.me/`date +%Y.%m`/`date +%Y.%m.%d`_$resolution.png \
-	       	-O today.png
+	       	-O $temp_file.png
 	if [ $? -eq 0 ]
 	then
 		suffix=png
@@ -75,7 +77,7 @@ then
 	gconftool-2 --type bool 	\
 		--set /desktop/gnome/background/draw_background true
 	gconftool-2 --type string \
-		--set /desktop/gnome/background/picture_filename "$PWD/today.$suffix"
+		--set /desktop/gnome/background/picture_filename "$PWD/$temp_file.$suffix"
 fi
 
 #
