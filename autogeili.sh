@@ -20,7 +20,7 @@
 #	1920x1080
 #	1600x1200
 # -----------------------------------------------------------------------------
-resolution=1920x1200
+resolution=1600x1200
 
 #
 # Remove yesterday wallpaper
@@ -69,15 +69,15 @@ fi
 # -----------------------------------------------------------------------------
 if [ $success_flg ]
 then 
-	gconftool --type string \
+	gconftool-2 --type string \
 		--set /desktop/gnome/background/picture_options "zoom"
-	gconftool --type int 	\
+	gconftool-2 --type int 	\
 		--set /desktop/gnome/background/picture_opacity 100
-	gconftool --type string \
+	gconftool-2 --type string \
 		--set /desktop/gnome/background/color_shading_type "solid"
-	gconftool --type bool 	\
+	gconftool-2 --type bool 	\
 		--set /desktop/gnome/background/draw_background true
-	gconftool --type string \
+	gconftool-2 --type string \
 		--set /desktop/gnome/background/picture_filename "$PWD/today.$suffix"
 fi
 
