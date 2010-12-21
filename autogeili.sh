@@ -23,18 +23,19 @@
 resolution=1600x1200
 
 temp_file=.today
+temp_dir=$PWD
 
 #
 # Remove yesterday wallpaper
 # -----------------------------------------------------------------------------
-if [ -e $temp_file.jpg ]
+if [ -e $temp_dir/$temp_file.jpg ]
 then
-	rm $temp_file.jpg
+	rm $temp_dir/$temp_file.jpg
 fi
 
-if [ -e $temp_file.png ]
+if [ -e $temp_dir/$temp_file.png ]
 then
-	rm $temp_file.png
+	rm $temp_dir/$temp_file.png
 fi
 
 # 
@@ -77,7 +78,7 @@ then
 	gconftool-2 --type bool 	\
 		--set /desktop/gnome/background/draw_background true
 	gconftool-2 --type string \
-		--set /desktop/gnome/background/picture_filename "$PWD/$temp_file.$suffix"
+		--set /desktop/gnome/background/picture_filename "$temp_dir/$temp_file.$suffix"
 fi
 
 #
