@@ -41,25 +41,22 @@ fi
 wget \
 	-c http://img.wordsmotivate.me/`date +%Y.%m`/`date +%Y.%m.%d`_$resolution.jpg \
        	-O today.jpg
-suffix=jpg
 
-success_flg=true
-
-# TODO: $success_flg always return true.
-# Fix next version
-
-if [ $? -ne 0 ]
+if [ $? -eq 0 ]
 then
+	suffix=jpg
+	success_flg=0
+else
 	wget \
 		-c http://img.wordsmotivate.me/`date +%Y.%m`/`date +%Y.%m.%d`_$resolution.png \
 	       	-O today.png
-	if [ $? ]
+	if [ $? -eq 0 ]
 	then
 		suffix=png
-		success_flg=true
+		success_flg=0
 	else
 		# cann't get image
-		success_flg=false
+		success_flg=-1
 		notify-send "Autogeili" "Cann't download wallpaper!" -i /usr/share/pixmaps/gnome-irc.png
 	fi
 fi
@@ -67,7 +64,7 @@ fi
 # 
 # Config wallpaper using gconftool
 # -----------------------------------------------------------------------------
-if [ $success_flg ]
+if [ $success_flg -eq 0 ]
 then 
 	gconftool-2 --type string \
 		--set /desktop/gnome/background/picture_options "zoom"
@@ -84,7 +81,7 @@ fi
 #
 # Job completed !
 # -----------------------------------------------------------------------------
-if [ $success_flg ]
+if [ $success_flg -eq 0 ]
 then
 	notify-send "Autogeili" "Update Completed!" -i /usr/share/pixmaps/gnome-irc.png
 fi
