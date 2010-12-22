@@ -1,0 +1,16 @@
+2010-12-22 Richard Ma <richard.ma.198505059@gmail.com>
+
+	* autogeili.sh: Fix bug: resolution 1280x1024 ( 5: 4) autodetect.
+	* ChangeLog: 	Add ChangeLog
+
+2010-12-21 Richard Ma <richard.ma.198505059@gmail.com>
+
+	* autogeili.sh: New Feature resolution autodetect.
+	* autogeili.sh: Add user setting the temp directory.
+	* autogeili.sh: Change temp file today.xxx to .today.xxx.
+	* install.sh:	Add install.sh
+	* autogeili.sh: Fix bug: download failed.
+	* autogeili.sh: Fix bug: change gconftool to gconftool-2.
+
+2010-12-20 Richard Ma <richard.ma.198505059@gmail.com>
+	* autogeili.sh: Initalize this project.
