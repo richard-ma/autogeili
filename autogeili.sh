@@ -22,18 +22,18 @@ temp_dir=$PWD
 # 	1920x1200 (16:10)
 #	1920x1080 (16: 9)
 #	1600x1200 ( 4: 3)
+#	1600x1200 ( 5: 4) Fix Resolution 1280x1024
 # -----------------------------------------------------------------------------
 screen_width=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 1`
 screen_height=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 2`
 
-if [ `expr $screen_width \* 10` -eq `expr $screen_height \* 16` ]
-then
+if [ `expr $screen_width \* 10` -eq `expr $screen_height \* 16` ]; then
 	resolution=1920x1200
-elif  [ `expr $screen_width \* 9` -eq `expr $screen_height \* 16` ]
-then
+elif  [ `expr $screen_width \* 9` -eq `expr $screen_height \* 16` ]; then
 	resolution=1920x1080
-elif  [ `expr $screen_width \* 3` -eq `expr $screen_height \* 4` ]
-then
+elif  [ `expr $screen_width \* 3` -eq `expr $screen_height \* 4` ]; then
+	resolution=1600x1200
+elif  [ `expr $screen_width \* 4` -eq `expr $screen_height \* 5` ]; then
 	resolution=1600x1200
 else
 	success_flg=-1
@@ -42,13 +42,11 @@ fi
 #
 # Remove yesterday wallpaper
 # -----------------------------------------------------------------------------
-if [ -e $temp_dir/$temp_file.jpg ]
-then
+if [ -e $temp_dir/$temp_file.jpg ]; then
 	rm $temp_dir/$temp_file.jpg
 fi
 
-if [ -e $temp_dir/$temp_file.png ]
-then
+if [ -e $temp_dir/$temp_file.png ]; then
 	rm $temp_dir/$temp_file.png
 fi
 
@@ -59,16 +57,14 @@ wget \
 	-c http://img.wordsmotivate.me/`date +%Y.%m`/`date +%Y.%m.%d`_$resolution.jpg \
        	-O $temp_file.jpg
 
-if [ $? -eq 0 ]
-then
+if [ $? -eq 0 ]; then
 	suffix=jpg
 	success_flg=0
 else
 	wget \
 		-c http://img.wordsmotivate.me/`date +%Y.%m`/`date +%Y.%m.%d`_$resolution.png \
 	       	-O $temp_file.png
-	if [ $? -eq 0 ]
-	then
+	if [ $? -eq 0 ]; then
 		suffix=png
 		success_flg=0
 	else
@@ -81,8 +77,7 @@ fi
 # 
 # Config wallpaper using gconftool
 # -----------------------------------------------------------------------------
-if [ $success_flg -eq 0 ]
-then 
+if [ $success_flg -eq 0 ]; then
 	gconftool-2 \
 		--type string \
 		--set /desktop/gnome/background/picture_options "zoom"
@@ -103,7 +98,6 @@ fi
 #
 # Job completed !
 # -----------------------------------------------------------------------------
-if [ $success_flg -eq 0 ]
-then
+if [ $success_flg -eq 0 ]; then
 	notify-send "Autogeili" "Update Completed!" -i /usr/share/pixmaps/gnome-irc.png
 fi
