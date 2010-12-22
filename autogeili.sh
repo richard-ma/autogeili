@@ -12,8 +12,33 @@
 # 	http://www.wordsmotivate.me
 # =============================================================================
 
-temp_file=.today
-temp_dir=$PWD
+img_file=today_wallpaper
+data_file=data
+config_dir=~/.autogeili
+
+# 
+# Create config_dir if not exsist
+# -----------------------------------------------------------------------------
+if [ ! -e $config_dir ]; then
+	mkdir -p $config_dir
+elif [ ! -d $config_dir ]; then
+	notify-send "Autogeili" "Cann't create config directory. [$config_dir]" -i /usr/share/pixmaps/gnome-irc.png
+	exit
+fi
+
+# 
+# Update date in data_file
+# -----------------------------------------------------------------------------
+today_date=`date +%Y-%d-%m`
+if [ -e $config_dir/$data_file ]; then
+	data_date=`cat $config_dir/$data_file`
+	if [ $today_date = $data_date ]; then
+		notify-send "Autogeili" "You have already downloaded today's wallpaper." -i /usr/share/pixmaps/gnome-irc.png
+		exit
+	fi
+fi
+
+echo $today_date > $config_dir/$data_file
 
 #
 # Screen Resolution autodetect 
@@ -42,12 +67,12 @@ fi
 #
 # Remove yesterday wallpaper
 # -----------------------------------------------------------------------------
-if [ -e $temp_dir/$temp_file.jpg ]; then
-	rm $temp_dir/$temp_file.jpg
+if [ -e $config_dir/$img_file.jpg ]; then
+	rm $config_dir/$img_file.jpg
 fi
 
-if [ -e $temp_dir/$temp_file.png ]; then
-	rm $temp_dir/$temp_file.png
+if [ -e $config_dir/$img_file.png ]; then
+	rm $config_dir/$img_file.png
 fi
 
 # 
@@ -55,7 +80,7 @@ fi
 # -----------------------------------------------------------------------------
 wget \
 	-c http://img.wordsmotivate.me/`date +%Y.%m`/`date +%Y.%m.%d`_$resolution.jpg \
-       	-O $temp_file.jpg
+       	-O $config_dir/$img_file.jpg
 
 if [ $? -eq 0 ]; then
 	suffix=jpg
@@ -63,7 +88,7 @@ if [ $? -eq 0 ]; then
 else
 	wget \
 		-c http://img.wordsmotivate.me/`date +%Y.%m`/`date +%Y.%m.%d`_$resolution.png \
-	       	-O $temp_file.png
+	       	-O $config_dir/$img_file.png
 	if [ $? -eq 0 ]; then
 		suffix=png
 		success_flg=0
@@ -92,7 +117,7 @@ if [ $success_flg -eq 0 ]; then
 		--set /desktop/gnome/background/draw_background true
 	gconftool-2 \
 		--type string \
-		--set /desktop/gnome/background/picture_filename "$temp_dir/$temp_file.$suffix"
+		--set /desktop/gnome/background/picture_filename "$config_dir/$img_file.$suffix"
 fi
 
 #
