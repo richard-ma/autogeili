@@ -40,6 +40,13 @@ fi
 
 echo $today_date > $config_dir/$data_file
 
+# 
+# Setting another wallpaper
+# -----------------------------------------------------------------------------
+gconftool-2 \
+	--type string \
+	--set /desktop/gnome/background/picture_filename "/usr/share/backgrounds/warty-final-ubuntu.png"
+
 #
 # Screen Resolution autodetect 
 #

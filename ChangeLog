@@ -2,8 +2,9 @@
 
 	* autogeili.sh: Fix bug: resolution 1280x1024 ( 5: 4) autodetect.
 	* ChangeLog: 	Add ChangeLog
-	* autogeili.sh: Add date config file to avoid download many time from
+	* autogeili.sh: Add date config file to avoid download many times from
 	server in one day.
+	* autogeili.sh: Fix bug: new wallpaper display problem.
 
 2010-12-21 Richard Ma <richard.ma.198505059@gmail.com>
 
