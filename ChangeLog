@@ -1,3 +1,6 @@
+2010-12-27 Richard Ma <richard.ma.198505059@gmail.com>
+	* autogeili.sh: change Constants name.
+
 2010-12-22 Richard Ma <richard.ma.198505059@gmail.com>
 
 	* autogeili.sh: Fix bug: resolution 1280x1024 ( 5: 4) autodetect.
