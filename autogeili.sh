@@ -12,33 +12,33 @@
 # 	http://www.wordsmotivate.me
 # =============================================================================
 
-img_file=today_wallpaper
-data_file=data
-config_dir=~/.autogeili
+WALLPAPER_FILE=today_wallpaper
+CONFIG_FILE=config
+CONFIG_DIR=~/.autogeili
 
 # 
-# Create config_dir if not exsist
+# Create CONFIG_DIR if not exsist
 # -----------------------------------------------------------------------------
-if [ ! -e $config_dir ]; then
-	mkdir -p $config_dir
-elif [ ! -d $config_dir ]; then
-	notify-send "Autogeili" "Cann't create config directory. [$config_dir]" -i /usr/share/pixmaps/gnome-irc.png
+if [ ! -e $CONFIG_DIR ]; then
+	mkdir -p $CONFIG_DIR
+elif [ ! -d $CONFIG_DIR ]; then
+	notify-send "Autogeili" "Cann't create config directory. [$CONFIG_DIR]" -i /usr/share/pixmaps/gnome-irc.png
 	exit
 fi
 
 # 
-# Update date in data_file
+# Update date in CONFIG_FILE
 # -----------------------------------------------------------------------------
 today_date=`date +%Y-%d-%m`
-if [ -e $config_dir/$data_file ]; then
-	data_date=`cat $config_dir/$data_file`
+if [ -e $CONFIG_DIR/$CONFIG_FILE ]; then
+	data_date=`cat $CONFIG_DIR/$CONFIG_FILE`
 	if [ $today_date = $data_date ]; then
 		notify-send "Autogeili" "You have already downloaded today's wallpaper." -i /usr/share/pixmaps/gnome-irc.png
 		exit
 	fi
 fi
 
-echo $today_date > $config_dir/$data_file
+echo $today_date > $CONFIG_DIR/$CONFIG_FILE
 
 # 
 # Setting another wallpaper
@@ -74,12 +74,12 @@ fi
 #
 # Remove yesterday wallpaper
 # -----------------------------------------------------------------------------
-if [ -e $config_dir/$img_file.jpg ]; then
-	rm $config_dir/$img_file.jpg
+if [ -e $CONFIG_DIR/$WALLPAPER_FILE.jpg ]; then
+	rm $CONFIG_DIR/$WALLPAPER_FILE.jpg
 fi
 
-if [ -e $config_dir/$img_file.png ]; then
-	rm $config_dir/$img_file.png
+if [ -e $CONFIG_DIR/$WALLPAPER_FILE.png ]; then
+	rm $CONFIG_DIR/$WALLPAPER_FILE.png
 fi
 
 # 
@@ -87,7 +87,7 @@ fi
 # -----------------------------------------------------------------------------
 wget \
 	-c http://img.wordsmotivate.me/`date +%Y.%m`/`date +%Y.%m.%d`_$resolution.jpg \
-       	-O $config_dir/$img_file.jpg
+       	-O $CONFIG_DIR/$WALLPAPER_FILE.jpg
 
 if [ $? -eq 0 ]; then
 	suffix=jpg
@@ -95,7 +95,7 @@ if [ $? -eq 0 ]; then
 else
 	wget \
 		-c http://img.wordsmotivate.me/`date +%Y.%m`/`date +%Y.%m.%d`_$resolution.png \
-	       	-O $config_dir/$img_file.png
+	       	-O $CONFIG_DIR/$WALLPAPER_FILE.png
 	if [ $? -eq 0 ]; then
 		suffix=png
 		success_flg=0
@@ -124,7 +124,7 @@ if [ $success_flg -eq 0 ]; then
 		--set /desktop/gnome/background/draw_background true
 	gconftool-2 \
 		--type string \
-		--set /desktop/gnome/background/picture_filename "$config_dir/$img_file.$suffix"
+		--set /desktop/gnome/background/picture_filename "$CONFIG_DIR/$WALLPAPER_FILE.$suffix"
 fi
 
 #
