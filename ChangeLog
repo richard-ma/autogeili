@@ -1,3 +1,6 @@
+2011-01-03 Richard Ma <richard.ma.198505059@gmail.com>
+	* autogeili.sh: Fix bug: Date format.
+
 2010-12-27 Richard Ma <richard.ma.198505059@gmail.com>
 	* autogeili.sh: change Constants name.
 	* dev/: add develop directory.

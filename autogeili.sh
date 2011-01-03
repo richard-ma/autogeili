@@ -86,7 +86,7 @@ fi
 # Get today wallpaper.
 # -----------------------------------------------------------------------------
 wget \
-	-c http://img.wordsmotivate.me/`date +%Y.%m`/`date +%Y.%m.%d`_$resolution.jpg \
+	-c http://img.wordsmotivate.me/`date +%Y.%-m`/`date +%Y.%-m.%-d`_$resolution.jpg \
        	-O $CONFIG_DIR/$WALLPAPER_FILE.jpg
 
 if [ $? -eq 0 ]; then
@@ -94,7 +94,7 @@ if [ $? -eq 0 ]; then
 	success_flg=0
 else
 	wget \
-		-c http://img.wordsmotivate.me/`date +%Y.%m`/`date +%Y.%m.%d`_$resolution.png \
+		-c http://img.wordsmotivate.me/`date +%Y.%-m`/`date +%Y.%-m.%-d`_$resolution.png \
 	       	-O $CONFIG_DIR/$WALLPAPER_FILE.png
 	if [ $? -eq 0 ]; then
 		suffix=png
