@@ -12,9 +12,14 @@
 # 	http://www.wordsmotivate.me
 # =============================================================================
 
-WALLPAPER_FILE=today_wallpaper
-CONFIG_FILE=config
-CONFIG_DIR=~/.autogeili
+readonly DOMAIN_URL=wordsmotivate.me
+readonly IMG_PREFIX_URL=img
+readonly API_PREFIX_URL=api
+readonly IMG_URL=http://$IMG_PREFIX_URL.$DOMAIN_URL/
+readonly API_URL=http://$API_PREFIX_URL.$DOMAIN_URL/
+readonly WALLPAPER_FILE=today_wallpaper
+readonly CONFIG_FILE=config
+readonly CONFIG_DIR=~/.autogeili
 
 # 
 # Create CONFIG_DIR if not exsist
@@ -86,7 +91,7 @@ fi
 # Get today wallpaper.
 # -----------------------------------------------------------------------------
 wget \
-	-c http://img.wordsmotivate.me/`date +%Y.%-m`/`date +%Y.%-m.%-d`_$resolution.jpg \
+	-c $IMG_URL/`date +%Y.%-m`/`date +%Y.%-m.%-d`_$resolution.jpg \
        	-O $CONFIG_DIR/$WALLPAPER_FILE.jpg
 
 if [ $? -eq 0 ]; then
@@ -94,7 +99,7 @@ if [ $? -eq 0 ]; then
 	success_flg=0
 else
 	wget \
-		-c http://img.wordsmotivate.me/`date +%Y.%-m`/`date +%Y.%-m.%-d`_$resolution.png \
+		-c $IMG_URL/`date +%Y.%-m`/`date +%Y.%-m.%-d`_$resolution.png \
 	       	-O $CONFIG_DIR/$WALLPAPER_FILE.png
 	if [ $? -eq 0 ]; then
 		suffix=png
