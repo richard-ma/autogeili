@@ -1,5 +1,6 @@
 2011-01-04 Richard Ma <richard.ma.198505059@gmail.com>
 	* autogeili.sh: Modify URL vars deleartion.
+	* autogeili.sh: Use date command once.
 
 2011-01-03 Richard Ma <richard.ma.198505059@gmail.com>
 	* autogeili.sh: Fix bug: Date format.
