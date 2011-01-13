@@ -1,5 +1,6 @@
 2011-01-13 Richard Ma <richard.ma.198505059@gmail.com>
 	* autogeili.sh: Fix Bug: Add 1366x768 resolution.
+	* autogeili.sh: New Feature: Use api to get picture format.
 
 2011-01-04 Richard Ma <richard.ma.198505059@gmail.com>
 	* autogeili.sh: Modify URL vars deleartion.

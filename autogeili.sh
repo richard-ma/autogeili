@@ -68,7 +68,7 @@ gconftool-2 \
 screen_width=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 1`
 screen_height=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 2`
 
-if [ `expr $screen_width \* 8` -eq `expr $screen_height \* 5` ]; then
+if [ `expr $screen_width \* 5` -eq `expr $screen_height \* 8` ]; then
 	resolution=1920x1200
 elif  [ `expr $screen_width \* 9` -eq `expr $screen_height \* 16` ]; then
 	resolution=1920x1080
@@ -83,39 +83,47 @@ else
 fi
 IMG_URL=$IMG_URL\_$resolution
 
+# 
+# Remove yesterday api data 
+# -----------------------------------------------------------------------------
+if [ -e $CONFIG_DIR/format.api ]; then
+	rm $CONFIG_DIR/format.api
+fi
+
+# 
+# Get wallpaper format
+# -----------------------------------------------------------------------------
+wget \
+       -c $API_URL \
+       -O $CONFIG_DIR/format.api
+if [ $? -ne 0 ]; then
+	$success_flg = -1
+else
+	IMG_TYPE=`cat $CONFIG_DIR/format.api | grep REQ_RESULT_END | cut -d'[' -f 1 | cut -d':' -f 2 | tr '[A-Z]' '[a-z]'`
+	$success_flg = 0
+fi
+IMG_URL=$IMG_URL.$IMG_TYPE
+
 #
 # Remove yesterday wallpaper
 # -----------------------------------------------------------------------------
-if [ -e $CONFIG_DIR/$WALLPAPER_FILE.jpg ]; then
-	rm $CONFIG_DIR/$WALLPAPER_FILE.jpg
-fi
-
-if [ -e $CONFIG_DIR/$WALLPAPER_FILE.png ]; then
-	rm $CONFIG_DIR/$WALLPAPER_FILE.png
+if [ -e $CONFIG_DIR/$WALLPAPER_FILE.$IMG_TYPE ]; then
+	rm $CONFIG_DIR/$WALLPAPER_FILE.$IMG_TYPE
 fi
 
 # 
 # Get today wallpaper.
 # -----------------------------------------------------------------------------
 wget \
-	-c $IMG_URL.jpg \
-       	-O $CONFIG_DIR/$WALLPAPER_FILE.jpg
+	-c $IMG_URL \
+       	-O $CONFIG_DIR/$WALLPAPER_FILE.$IMG_TYPE
 
 if [ $? -eq 0 ]; then
-	suffix=jpg
 	success_flg=0
 else
-	wget \
-		-c $IMG_URL.png \
-	       	-O $CONFIG_DIR/$WALLPAPER_FILE.png
-	if [ $? -eq 0 ]; then
-		suffix=png
-		success_flg=0
-	else
-		# cann't get image
-		success_flg=-1
-		notify-send "Autogeili" "Cann't download wallpaper!" -i /usr/share/pixmaps/gnome-irc.png
-	fi
+	# cann't get image
+	success_flg=-1
+	notify-send "Autogeili" "Cann't download wallpaper!" -i /usr/share/pixmaps/gnome-irc.png
 fi
 
 # 
@@ -136,7 +144,7 @@ if [ $success_flg -eq 0 ]; then
 		--set /desktop/gnome/background/draw_background true
 	gconftool-2 \
 		--type string \
-		--set /desktop/gnome/background/picture_filename "$CONFIG_DIR/$WALLPAPER_FILE.$suffix"
+		--set /desktop/gnome/background/picture_filename "$CONFIG_DIR/$WALLPAPER_FILE.$IMG_TYPE"
 fi
 
 #
