@@ -59,17 +59,20 @@ gconftool-2 \
 # Screen Resolution autodetect 
 #
 # Resolution valid value: 
-# 	1920x1200 (16:10)
+# 	1920x1200 ( 8: 5)
 #	1920x1080 (16: 9)
+#	1920x1080 (1366x768) Fix Resolution 1366x768
 #	1600x1200 ( 4: 3)
 #	1600x1200 ( 5: 4) Fix Resolution 1280x1024
 # -----------------------------------------------------------------------------
 screen_width=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 1`
 screen_height=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 2`
 
-if [ `expr $screen_width \* 10` -eq `expr $screen_height \* 16` ]; then
+if [ `expr $screen_width \* 8` -eq `expr $screen_height \* 5` ]; then
 	resolution=1920x1200
 elif  [ `expr $screen_width \* 9` -eq `expr $screen_height \* 16` ]; then
+	resolution=1920x1080
+elif  [ $screen_width -eq 1366 ] && [ $screen_height -eq 768 ]; then
 	resolution=1920x1080
 elif  [ `expr $screen_width \* 3` -eq `expr $screen_height \* 4` ]; then
 	resolution=1600x1200
