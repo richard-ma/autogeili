@@ -10,6 +10,10 @@
 # 	http://code.google.com/p/autogeili/
 # Wallpaper Source - WordsMotivate:
 # 	http://www.wordsmotivate.me
+# 
+# License:
+# 	GPL v3
+# 	http://www.gnu.org/licenses/gpl.txt
 # =============================================================================
 
 readonly DATE_TODAY=`date +%Y.%-m.%-d`
@@ -24,6 +28,7 @@ readonly API_SUFFIX_URL=WallpaperFormat.php
          IMG_SUFFIX_URL=$MONTH_TODAY/$DATE_TODAY
          IMG_URL=http://$IMG_PREFIX_URL.$DOMAIN_URL/$IMG_SUFFIX_URL
          API_URL=http://$API_PREFIX_URL.$DOMAIN_URL/$API_SUFFIX_URL
+readonly ICON_FILE=$PWD/icons/autogeili-icon.png
 
 # 
 # Create CONFIG_DIR if not exsist
@@ -31,7 +36,7 @@ readonly API_SUFFIX_URL=WallpaperFormat.php
 if [ ! -e $CONFIG_DIR ]; then
 	mkdir -p $CONFIG_DIR
 elif [ ! -d $CONFIG_DIR ]; then
-	notify-send "Autogeili" "Cann't create config directory. [$CONFIG_DIR]" -i /usr/share/pixmaps/gnome-irc.png
+	notify-send "Autogeili" "Cann't create config directory. [$CONFIG_DIR]" -i $ICON_FILE
 	exit
 fi
 
@@ -41,7 +46,7 @@ fi
 if [ -e $CONFIG_DIR/$CONFIG_FILE ]; then
 	data_date=`cat $CONFIG_DIR/$CONFIG_FILE`
 	if [ $DATE_TODAY = $data_date ]; then
-		notify-send "Autogeili" "You have already downloaded today's wallpaper." -i /usr/share/pixmaps/gnome-irc.png
+		notify-send "Autogeili" "You have already downloaded today's wallpaper." -i $ICON_FILE
 		exit
 	fi
 fi
@@ -123,7 +128,7 @@ if [ $? -eq 0 ]; then
 else
 	# cann't get image
 	success_flg=-1
-	notify-send "Autogeili" "Cann't download wallpaper!" -i /usr/share/pixmaps/gnome-irc.png
+	notify-send "Autogeili" "Cann't download wallpaper!" -i $ICON_FILE
 fi
 
 # 
@@ -151,5 +156,5 @@ fi
 # Job completed !
 # -----------------------------------------------------------------------------
 if [ $success_flg -eq 0 ]; then
-	notify-send "Autogeili" "Update Completed!" -i /usr/share/pixmaps/gnome-irc.png
+	notify-send "Autogeili" "Update Completed!" -i $ICON_FILE
 fi

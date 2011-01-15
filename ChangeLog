@@ -1,3 +1,8 @@
+2011-01-15 Richard Ma <richard.ma.198505059@gmail.com>
+	* autogeili.sh: Add License information.
+	* autogeili.sh: New Feature: Change notify icon.
+	* Readme      : Add Readme file.
+
 2011-01-13 Richard Ma <richard.ma.198505059@gmail.com>
 	* autogeili.sh: Fix Bug: Add 1366x768 resolution.
 	* autogeili.sh: New Feature: Use api to get picture format.
