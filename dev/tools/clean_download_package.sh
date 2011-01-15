@@ -15,7 +15,7 @@ if [ -e $RELEASE_DIR ]; then
 	rm -rf $RELEASE_DIR
 fi
 
-if [ -e autogeili.tar.gz ]; then
-	rm autogeili.tar.gz
+if [ -e autogeili$1.tar.gz ]; then
+	rm autogeili$1.tar.gz
 fi
 

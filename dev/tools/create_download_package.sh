@@ -15,8 +15,8 @@ if [ -e $RELEASE_DIR ]; then
 	rm -rf $RELEASE_DIR
 fi
 
-if [ -e autogeili.tar.gz ]; then
-	rm autogeili.tar.gz
+if [ -e autogeili$1.tar.gz ]; then
+	rm autogeili$1.tar.gz
 fi
 
 # 
@@ -37,6 +37,6 @@ rm -rf $RELEASE_DIR/dev
 # 
 # Create package
 # -----------------
-tar -cf autogeili.tar autogeili/
-gzip autogeili.tar
+tar -cf autogeili$1.tar autogeili/
+gzip autogeili$1.tar
 
