@@ -5,7 +5,9 @@
 # Author: Richard Ma (richard_ma)
 # Email: richard.ma.19850509@gmail.com
 # Blog: http://www.richardma.org
-#
+# 
+# GitHub
+# 	https://github.com/richard-ma/autogeili
 # Google Code:
 # 	http://code.google.com/p/autogeili/
 # Wallpaper Source - WordsMotivate:
