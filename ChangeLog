@@ -1,5 +1,6 @@
 2011-01-20 Richard Ma <richard.ma.198505059@gmail.com>
-	* Makefile: Add Makefile
+	* Makefile: Add Makefile.
+	* Milestone: First Debian DEB Package of autogeili.
 
 2011-01-15 Richard Ma <richard.ma.198505059@gmail.com>
 	* autogeili.sh: Add License information.
