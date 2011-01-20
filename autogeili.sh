@@ -30,7 +30,7 @@ readonly API_SUFFIX_URL=WallpaperFormat.php
          IMG_SUFFIX_URL=$MONTH_TODAY/$DATE_TODAY
          IMG_URL=http://$IMG_PREFIX_URL.$DOMAIN_URL/$IMG_SUFFIX_URL
          API_URL=http://$API_PREFIX_URL.$DOMAIN_URL/$API_SUFFIX_URL
-readonly ICON_FILE=$PWD/icons/autogeili-icon.png
+readonly ICON_FILE=/usr/share/autogeili/autogeili-icon.png
 
 # 
 # Create CONFIG_DIR if not exsist
