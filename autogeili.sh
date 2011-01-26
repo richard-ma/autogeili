@@ -33,6 +33,42 @@ readonly API_SUFFIX_URL=WallpaperFormat.php
 readonly ICON_FILE=/usr/share/autogeili/autogeili-icon.png
 
 # 
+# Function: autogeili_autodetect_resolution
+#
+# Resolution valid value: 
+# 	1920x1200 ( 8: 5)
+#	1920x1080 (16: 9)
+#	1920x1080 (1366x768) Fix Resolution 1366x768
+#	1600x1200 ( 4: 3)
+#	1600x1200 ( 5: 4) Fix Resolution 1280x1024
+# -----------------------------------------------------------------------------
+function autogeili_autodetect_resolution()
+{
+
+screen_width=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 1`
+screen_height=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 2`
+
+if [ `expr $screen_width \* 5` -eq `expr $screen_height \* 8` ]; then
+	resolution="1920x1200"
+elif  [ `expr $screen_width \* 9` -eq `expr $screen_height \* 16` ]; then
+	resolution="1920x1080"
+elif  [ $screen_width -eq 1366 ] && [ $screen_height -eq 768 ]; then
+	resolution="1920x1080"
+elif  [ `expr $screen_width \* 3` -eq `expr $screen_height \* 4` ]; then
+	resolution="1600x1200"
+elif  [ `expr $screen_width \* 4` -eq `expr $screen_height \* 5` ]; then
+	resolution="1600x1200"
+else
+	resolution="-1"
+fi
+	
+echo $resolution
+}
+
+echo $(autogeili_autodetect_resolution)
+
+exit
+# 
 # Create CONFIG_DIR if not exsist
 # -----------------------------------------------------------------------------
 if [ ! -e $CONFIG_DIR ]; then
@@ -65,29 +101,7 @@ gconftool-2 \
 #
 # Screen Resolution autodetect 
 #
-# Resolution valid value: 
-# 	1920x1200 ( 8: 5)
-#	1920x1080 (16: 9)
-#	1920x1080 (1366x768) Fix Resolution 1366x768
-#	1600x1200 ( 4: 3)
-#	1600x1200 ( 5: 4) Fix Resolution 1280x1024
 # -----------------------------------------------------------------------------
-screen_width=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 1`
-screen_height=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 2`
-
-if [ `expr $screen_width \* 5` -eq `expr $screen_height \* 8` ]; then
-	resolution=1920x1200
-elif  [ `expr $screen_width \* 9` -eq `expr $screen_height \* 16` ]; then
-	resolution=1920x1080
-elif  [ $screen_width -eq 1366 ] && [ $screen_height -eq 768 ]; then
-	resolution=1920x1080
-elif  [ `expr $screen_width \* 3` -eq `expr $screen_height \* 4` ]; then
-	resolution=1600x1200
-elif  [ `expr $screen_width \* 4` -eq `expr $screen_height \* 5` ]; then
-	resolution=1600x1200
-else
-	success_flg=-1
-fi
 IMG_URL=$IMG_URL\_$resolution
 
 # 
