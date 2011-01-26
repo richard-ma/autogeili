@@ -32,8 +32,86 @@ readonly API_SUFFIX_URL=WallpaperFormat.php
          API_URL=http://$API_PREFIX_URL.$DOMAIN_URL/$API_SUFFIX_URL
 readonly ICON_FILE=/usr/share/autogeili/autogeili-icon.png
 
+#
+# Function: autogeili_set_wallpaper
+#
+# Params:
+# 	$1 wallpaper:	The wallpaper file and full path
+#
+# Return:
+# 	Currect: 	0
+# 	Error:		-1
+# -----------------------------------------------------------------------------
+function autogeili_set_wallpaper()
+{
+	wallpaper=$1
+
+	while true
+	do
+		gconftool-2 \
+			--type string \
+			--set /desktop/gnome/background/picture_options "zoom"
+		if [ $? -ne 0 ]; then break; fi
+		gconftool-2 \
+			--type int 	\
+			--set /desktop/gnome/background/picture_opacity 100
+		if [ $? -ne 0 ]; then break; fi
+		gconftool-2 \
+			--type string \
+			--set /desktop/gnome/background/color_shading_type "solid"
+		if [ $? -ne 0 ]; then break; fi
+		gconftool-2 \
+			--type bool 	\
+			--set /desktop/gnome/background/draw_background true
+		if [ $? -ne 0 ]; then break; fi
+		gconftool-2 \
+			--type string \
+			--set /desktop/gnome/background/picture_filename "$wallpaper"
+		if [ $? -ne 0 ]; then break; fi
+
+		echo 0
+		return
+	done;
+
+	echo -1
+}
+
+# 
+# Function: autogeili_notify
+#
+# Params:
+# 	$1 msg:		The message will display
+# 	$2 icon:	The icon of autogeili
+#
+# Return:
+# 	Currect:	0
+# 	Error:		0
+# -----------------------------------------------------------------------------
+function autogeili_notify()
+{
+	msg=$1
+	icon=$2
+
+	notify-send "Autogeili" $msg -i $icon
+
+	# If notify-send error occurd, use echo to replace
+	# the notify-send command.
+	if [ $? -ne 0 ]; then
+		echo "Autogeili: "$msg
+	fi
+
+	echo 0
+}
+
 # 
 # Function: autogeili_autodetect_resolution
+#
+# Params:
+# 	None
+#
+# Return:
+# 	Currect:	valid resolution value
+# 	Error:		-1
 #
 # Resolution valid value: 
 # 	1920x1200 ( 8: 5)
@@ -44,30 +122,32 @@ readonly ICON_FILE=/usr/share/autogeili/autogeili-icon.png
 # -----------------------------------------------------------------------------
 function autogeili_autodetect_resolution()
 {
+	screen_width=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 1`
+	screen_height=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 2`
 
-screen_width=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 1`
-screen_height=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 2`
-
-if [ `expr $screen_width \* 5` -eq `expr $screen_height \* 8` ]; then
-	resolution="1920x1200"
-elif  [ `expr $screen_width \* 9` -eq `expr $screen_height \* 16` ]; then
-	resolution="1920x1080"
-elif  [ $screen_width -eq 1366 ] && [ $screen_height -eq 768 ]; then
-	resolution="1920x1080"
-elif  [ `expr $screen_width \* 3` -eq `expr $screen_height \* 4` ]; then
-	resolution="1600x1200"
-elif  [ `expr $screen_width \* 4` -eq `expr $screen_height \* 5` ]; then
-	resolution="1600x1200"
-else
-	resolution="-1"
-fi
+	if [ `expr $screen_width \* 5` -eq `expr $screen_height \* 8` ]; then
+		resolution="1920x1200"
+	elif  [ `expr $screen_width \* 9` -eq `expr $screen_height \* 16` ]; then
+		resolution="1920x1080"
+	elif  [ $screen_width -eq 1366 ] && [ $screen_height -eq 768 ]; then
+		resolution="1920x1080"
+	elif  [ `expr $screen_width \* 3` -eq `expr $screen_height \* 4` ]; then
+		resolution="1600x1200"
+	elif  [ `expr $screen_width \* 4` -eq `expr $screen_height \* 5` ]; then
+		resolution="1600x1200"
+	else
+		resolution=-1
+	fi
 	
-echo $resolution
+	echo $resolution
 }
 
-echo $(autogeili_autodetect_resolution)
-
+echo `autogeili_autodetect_resolution`
 exit
+
+# =============================================================================
+# =============================================================================
+
 # 
 # Create CONFIG_DIR if not exsist
 # -----------------------------------------------------------------------------
@@ -151,21 +231,6 @@ fi
 # Config wallpaper using gconftool
 # -----------------------------------------------------------------------------
 if [ $success_flg -eq 0 ]; then
-	gconftool-2 \
-		--type string \
-		--set /desktop/gnome/background/picture_options "zoom"
-	gconftool-2 \
-		--type int 	\
-		--set /desktop/gnome/background/picture_opacity 100
-	gconftool-2 \
-		--type string \
-		--set /desktop/gnome/background/color_shading_type "solid"
-	gconftool-2 \
-		--type bool 	\
-		--set /desktop/gnome/background/draw_background true
-	gconftool-2 \
-		--type string \
-		--set /desktop/gnome/background/picture_filename "$CONFIG_DIR/$WALLPAPER_FILE.$IMG_TYPE"
 fi
 
 #
