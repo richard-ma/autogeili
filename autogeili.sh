@@ -142,8 +142,17 @@ function autogeili_autodetect_resolution()
 	echo $resolution
 }
 
-echo `autogeili_autodetect_resolution`
-exit
+# 
+# Function: main
+# =============================================================================
+function main()
+{
+	
+
+	return 0
+}
+
+return main
 
 # =============================================================================
 # =============================================================================
