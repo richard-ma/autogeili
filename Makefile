@@ -9,7 +9,6 @@ version:
 clean:
 
 install:
-	mkdir -p ~/.autogeili
 	install -d \
 		$(DESTDIR)/usr/bin \
 		$(DESTDIR)/usr/share/autogeili

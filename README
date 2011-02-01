@@ -111,6 +111,7 @@ Autogeili 安装及使用说明
  
  	autogeili在运行时会产生一些运行文件，请首先使用如下命令删除运行文件：
  	$ rm -rf ~/.autogeili
+	$ rm -rf ~/.autogeilirc
  	
  1.5.2 删除Autogeili
  
@@ -126,8 +127,9 @@ Autogeili 安装及使用说明
 ##- 相关链接 -##
 
 	作者: Richard Ma (richard_ma)
-	Email: 	richard.ma.19850509+autogeili@gmail.com
+	Email: 	richard.ma.19850509@gmail.com
 	Blog:	http://www.richardma.org
+
 	Autogeili 项目首页：
 	http://www.richardma.org/blog/funnies/autogeili/
 	https://github.com/richard-ma/autogeili (git)
@@ -138,7 +140,12 @@ Autogeili 安装及使用说明
 	壁纸提供： WordsMotivate -- 给力壁纸
 	http://www.wordsmotivate.me/
 	
-	代码托管： Google Code
+	代码托管： 
+
+	GitHub
+ 	https://github.com/richard-ma/autogeili
+
+	Google Code
 	http://code.google.com/
 	
 	以及所有为开源做出贡献的人们！

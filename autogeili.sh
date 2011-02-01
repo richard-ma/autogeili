@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # =============================================================================
-# File name: autogeili.sh
+# File Name: autogeili.sh
 # Author: Richard Ma (richard_ma)
 # Email: richard.ma.19850509@gmail.com
 # Blog: http://www.richardma.org
@@ -10,27 +10,113 @@
 # 	https://github.com/richard-ma/autogeili
 # Google Code:
 # 	http://code.google.com/p/autogeili/
-# Wallpaper Source - WordsMotivate:
+# 
+# wallpaper source - wordsmotivate:
 # 	http://www.wordsmotivate.me
 # 
-# License:
-# 	GPL v3
+# LICENSE:
+# 	GPL V3
 # 	http://www.gnu.org/licenses/gpl.txt
 # =============================================================================
 
-readonly DATE_TODAY=`date +%Y.%-m.%-d`
-readonly MONTH_TODAY=`date +%Y.%-m`
-readonly WALLPAPER_FILE=today_wallpaper
-readonly CONFIG_FILE=config
+readonly TIME_NOW_DATE=`date +%Y.%-m.%-d`
+readonly TIME_NOW_MONTH=`date +%Y.%-m`
+
+readonly CONFIG_FILE=~/.autogeilirc
 readonly CONFIG_DIR=~/.autogeili
+
+readonly WALLPAPER_FILE=$CONFIG_DIR/wallpaper
+readonly WALLPAPER_TMP_FILE=$CONFIG_DIR/tmp_wallpaper
+readonly WALLPAPER_DOWNLOAD_FILE=$CONFIG_DIR/down_wallpaper
+
 readonly DOMAIN_URL=wordsmotivate.me
 readonly IMG_PREFIX_URL=img
 readonly API_PREFIX_URL=api
 readonly API_SUFFIX_URL=WallpaperFormat.php
-         IMG_SUFFIX_URL=$MONTH_TODAY/$DATE_TODAY
-         IMG_URL=http://$IMG_PREFIX_URL.$DOMAIN_URL/$IMG_SUFFIX_URL
-         API_URL=http://$API_PREFIX_URL.$DOMAIN_URL/$API_SUFFIX_URL
-readonly ICON_FILE=/usr/share/autogeili/autogeili-icon.png
+readonly IMG_SUFFIX_URL=$TIME_NOW_MONTH/$TIME_NOW_DATE
+readonly IMG_URL=http://$IMG_PREFIX_URL.$DOMAIN_URL/$IMG_SUFFIX_URL
+readonly API_URL=http://$API_PREFIX_URL.$DOMAIN_URL/$API_SUFFIX_URL
+
+readonly ICON_FILE=/usr/share/autogeili/autogeili-icon-sf.png
+
+# 
+# Function: autogeili_check_need_update
+#
+# Params:
+# 	$1 config_file:	User rc profile
+# 	
+# Return:
+# 	Currect:	0	need update
+# 	Error:		1
+# -----------------------------------------------------------------------------
+function autogeili_check_need_update()
+{
+	config_file=$1
+
+	log_date=`cat $config_file | grep -i "last_update" | cut -d':' -f2`
+	today_date=$TIME_NOW_DATE
+
+	if [ $log_date == $today_date ]; then
+		echo 1		# already updated
+	else
+		echo 0		# need update
+	fi
+}
+
+#
+# Function: autogeili_get_file_type
+#
+# Params:
+# 	None
+#
+# Return:
+# 	Currect:	valid file type
+# 	Error:		unknown
+#
+# Valid file type
+# 	jpg
+# 	png
+# -----------------------------------------------------------------------------
+function autogeili_get_file_type()
+{
+	wget \
+		-c $API_URL \
+		-O $CONFIG_DIR/format.api
+	if [ $? -ne 0 ]; then
+		echo "unknown"
+		return
+	fi
+
+	IMG_TYPE=`cat $CONFIG_DIR/format.api | grep REQ_RESULT_END | cut -d'[' -f 1 | cut -d':' -f 2 | tr '[A-Z]' '[a-z]'`
+	rm $CONFIG_DIR/format.api
+
+	echo $IMG_TYPE
+}
+
+# 
+# Function: autogeili_check_user_dir
+#
+# Params:
+# 	None
+#
+# Return:
+# 	Currect:	0
+# 	Error:		0
+# -----------------------------------------------------------------------------
+function autogeili_check_user_dir()
+{
+	if [ ! -e $CONFIG_DIR ]; then
+		mkdir -p $CONFIG_DIR
+		touch $WALLPAPER_FILE.jpg
+	fi
+
+	if [ ! -e $CONFIG_FILE ]; then
+		touch $CONFIG_FILE
+		echo "last_update:`date --date=\"yesterday\" +%y.%-m.%-d`" >> $CONFIG_FILE
+	fi
+
+	echo 0
+}
 
 #
 # Function: autogeili_set_wallpaper
@@ -40,7 +126,7 @@ readonly ICON_FILE=/usr/share/autogeili/autogeili-icon.png
 #
 # Return:
 # 	Currect: 	0
-# 	Error:		-1
+# 	Error:		1
 # -----------------------------------------------------------------------------
 function autogeili_set_wallpaper()
 {
@@ -73,7 +159,7 @@ function autogeili_set_wallpaper()
 		return
 	done;
 
-	echo -1
+	echo 1
 }
 
 # 
@@ -92,12 +178,12 @@ function autogeili_notify()
 	msg=$1
 	icon=$2
 
-	notify-send "Autogeili" $msg -i $icon
+	notify-send "Autogeili" "$msg" -i "$icon"
 
-	# If notify-send error occurd, use echo to replace
-	# the notify-send command.
+	# error occurd
 	if [ $? -ne 0 ]; then
-		echo "Autogeili: "$msg
+		echo 1
+		return 
 	fi
 
 	echo 0
@@ -111,7 +197,7 @@ function autogeili_notify()
 #
 # Return:
 # 	Currect:	valid resolution value
-# 	Error:		-1
+# 	Error:		0x0
 #
 # Resolution valid value: 
 # 	1920x1200 ( 8: 5)
@@ -136,7 +222,7 @@ function autogeili_autodetect_resolution()
 	elif  [ `expr $screen_width \* 4` -eq `expr $screen_height \* 5` ]; then
 		resolution="1600x1200"
 	else
-		resolution=-1
+		resolution="0x0"
 	fi
 	
 	echo $resolution
@@ -147,104 +233,101 @@ function autogeili_autodetect_resolution()
 # =============================================================================
 function main()
 {
+	succ_flg=0
+
+	# 
+	# Check user profile and user temp dir.
+	#
+	succ_flg=`autogeili_check_user_dir`
+	if [ 0 -lt $succ_flg ]; then 
+		abs_var=`autogeili_notify "Cann't get user profile." $ICON_FILE`
+		return 1
+	fi
+
+	# 
+	# Check last update date
+	#
+	succ_flg=`autogeili_check_need_update $CONFIG_FILE`
+	if [ 0 -lt $succ_flg ]; then 
+		abs_var=`autogeili_notify "Today's wallpaper has already been updated." $ICON_FILE`
+		return 2
+ 	fi
+
+	# 
+	# Get screen resolution.
+	#
+	succ_flg=`autogeili_autodetect_resolution`
+	if [ "0x0" == $succ_flg ]; then
+		abs_var=`autogeili_notify "Cann't get screen resolution." $ICON_FILE`
+		return 3
+	fi
+	readonly resolution=$succ_flg
+
+	#
+	# Get file type.
+	#
+	succ_flg=`autogeili_get_file_type`
+	if [ "unknown" == $succ_flg ]; then
+		abs_var=`autogeili_notify "Cann't get wordsmotivate api info." $ICON_FILE`
+		return 4
+	fi
+	readonly file_type=$succ_flg
+
+	# 
+	# Download wallpaper.
+	#
+	wget \
+		-c $IMG_URL\_$resolution.$file_type \
+		-O $WALLPAPER_DOWNLOAD_FILE.$file_type
+	if [ 0 -ne $? ]; then
+		abs_var=`autogeili_notify "Cann't download today wallpaper." $ICON_FILE`
+		return 5
+	fi
+
+	# 
+	# Detect yesterday wallpaper file type.
+	#
+	if [ -e $WALLPAPER_FILE.jpg ]; then
+		y_file_type="jpg"
+	elif [ -e $WALLPAPER_FILE.png ]; then
+		y_file_type="png"
+	else
+		abs_var=`autogeili_notify "Cann't find yesterday wallpaper." $ICON_FILE`
+		return 6
+	fi
+
+	# 
+	# Replace wallpaper.
+	#
+	cp $WALLPAPER_FILE.$y_file_type $WALLPAPER_TMP_FILE.$y_file_type
+
+	succ_flg=`autogeili_set_wallpaper $WALLPAPER_TMP_FILE.$y_file_type`
+	if [ 0 -ne $succ_flg ]; then
+		abs_var=`autogeili_notify "Cann't set wallpaper." $ICON_FILE`
+		return 7
+	fi
 	
+	rm $WALLPAPER_FILE.$y_file_type
+	mv $WALLPAPER_DOWNLOAD_FILE.$file_type $WALLPAPER_FILE.$file_type
+
+	succ_flg=`autogeili_set_wallpaper $WALLPAPER_FILE.$file_type`
+	if [ 0 -ne $succ_flg ]; then
+		abs_var=`autogeili_notify "Cann't set wallpaper." $ICON_FILE`
+		return 8
+	fi
+
+	rm $WALLPAPER_TMP_FILE.$y_file_type
+
+	# 
+	# Update user profile
+	#
+	sed -i -e "s/last_update:[0-9\.]*$/last_update:$TIME_NOW_DATE/g" $CONFIG_FILE 
 
 	return 0
 }
-
-return main
-
 # =============================================================================
 # =============================================================================
 
-# 
-# Create CONFIG_DIR if not exsist
-# -----------------------------------------------------------------------------
-if [ ! -e $CONFIG_DIR ]; then
-	mkdir -p $CONFIG_DIR
-elif [ ! -d $CONFIG_DIR ]; then
-	notify-send "Autogeili" "Cann't create config directory. [$CONFIG_DIR]" -i $ICON_FILE
-	exit
-fi
-
-# 
-# Update date in CONFIG_FILE
-# -----------------------------------------------------------------------------
-if [ -e $CONFIG_DIR/$CONFIG_FILE ]; then
-	data_date=`cat $CONFIG_DIR/$CONFIG_FILE`
-	if [ $DATE_TODAY = $data_date ]; then
-		notify-send "Autogeili" "You have already downloaded today's wallpaper." -i $ICON_FILE
-		exit
-	fi
-fi
-
-echo $DATE_TODAY > $CONFIG_DIR/$CONFIG_FILE
-
-# 
-# Setting another wallpaper
-# -----------------------------------------------------------------------------
-gconftool-2 \
-	--type string \
-	--set /desktop/gnome/background/picture_filename "/usr/share/backgrounds/warty-final-ubuntu.png"
-
-#
-# Screen Resolution autodetect 
-#
-# -----------------------------------------------------------------------------
-IMG_URL=$IMG_URL\_$resolution
-
-# 
-# Remove yesterday api data 
-# -----------------------------------------------------------------------------
-if [ -e $CONFIG_DIR/format.api ]; then
-	rm $CONFIG_DIR/format.api
-fi
-
-# 
-# Get wallpaper format
-# -----------------------------------------------------------------------------
-wget \
-       -c $API_URL \
-       -O $CONFIG_DIR/format.api
-if [ $? -ne 0 ]; then
-	$success_flg = -1
-else
-	IMG_TYPE=`cat $CONFIG_DIR/format.api | grep REQ_RESULT_END | cut -d'[' -f 1 | cut -d':' -f 2 | tr '[A-Z]' '[a-z]'`
-	$success_flg = 0
-fi
-IMG_URL=$IMG_URL.$IMG_TYPE
-
-#
-# Remove yesterday wallpaper
-# -----------------------------------------------------------------------------
-if [ -e $CONFIG_DIR/$WALLPAPER_FILE.$IMG_TYPE ]; then
-	rm $CONFIG_DIR/$WALLPAPER_FILE.$IMG_TYPE
-fi
-
-# 
-# Get today wallpaper.
-# -----------------------------------------------------------------------------
-wget \
-	-c $IMG_URL \
-       	-O $CONFIG_DIR/$WALLPAPER_FILE.$IMG_TYPE
-
-if [ $? -eq 0 ]; then
-	success_flg=0
-else
-	# cann't get image
-	success_flg=-1
-	notify-send "Autogeili" "Cann't download wallpaper!" -i $ICON_FILE
-fi
-
-# 
-# Config wallpaper using gconftool
-# -----------------------------------------------------------------------------
-if [ $success_flg -eq 0 ]; then
-fi
-
-#
-# Job completed !
-# -----------------------------------------------------------------------------
-if [ $success_flg -eq 0 ]; then
-	notify-send "Autogeili" "Update Completed!" -i $ICON_FILE
-fi
+main
+exit $?
+# =============================================================================
