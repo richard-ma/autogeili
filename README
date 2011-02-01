@@ -111,7 +111,7 @@ Autogeili 安装及使用说明
  
  	autogeili在运行时会产生一些运行文件，请首先使用如下命令删除运行文件：
  	$ rm -rf ~/.autogeili
-	$ rm -rf ~/.autogeilirc
+	$ rm ~/.autogeilirc
  	
  1.5.2 删除Autogeili
  
