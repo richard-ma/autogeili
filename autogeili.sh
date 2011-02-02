@@ -321,7 +321,7 @@ function main()
 	# 
 	# Update user profile
 	#
-	sed -i -e "s/last_update:[0-9\.]*$/last_update:$TIME_NOW_DATE/g" $CONFIG_FILE 
+	sed -i -e "s/^last_update:[0-9\.]*$/last_update:$TIME_NOW_DATE/g" $CONFIG_FILE 
 
 	abs_var=`autogeili_notify "Update Complete." $ICON_FILE`
 	return 0
