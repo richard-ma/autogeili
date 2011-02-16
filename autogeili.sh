@@ -37,7 +37,7 @@ readonly IMG_SUFFIX_URL=$TIME_NOW_MONTH/$TIME_NOW_DATE
 readonly IMG_URL=http://$IMG_PREFIX_URL.$DOMAIN_URL/$IMG_SUFFIX_URL
 readonly API_URL=http://$API_PREFIX_URL.$DOMAIN_URL/$API_SUFFIX_URL
 
-readonly ICON_FILE=/usr/share/autogeili/autogeili-icon-sf.png
+readonly ICON_FILE=/usr/share/autogeili/autogeili-icon.png
 
 # 
 # Function: autogeili_check_need_update
@@ -328,6 +328,20 @@ function main()
 }
 # =============================================================================
 # =============================================================================
+
+while getopts :d: option
+do
+    case "$option" in
+        d)
+            sleep $OPTARG
+            abs_var=`autogeili_notify "continue working." $ICON_FILE`
+            ;;
+        *)
+            abs_var=`autogeili_notify "Invalid option" $ICON_FILE`
+            exit -1
+            ;;
+    esac
+done
 
 main
 exit $?
