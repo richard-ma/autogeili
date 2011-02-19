@@ -323,7 +323,7 @@ function main()
 	#
 	sed -i -e "s/^last_update:[0-9\.]*$/last_update:$TIME_NOW_DATE/g" $CONFIG_FILE 
 
-	abs_var=`autogeili_notify "Update Complete." $ICON_FILE`
+	abs_var=`autogeili_notify "Update complete." $ICON_FILE`
 	return 0
 }
 # =============================================================================
@@ -333,8 +333,8 @@ while getopts :d: option
 do
     case "$option" in
         d)
+            abs_var=`autogeili_notify "still working." $ICON_FILE`
             sleep $OPTARG
-            abs_var=`autogeili_notify "continue working." $ICON_FILE`
             ;;
         *)
             abs_var=`autogeili_notify "Invalid option" $ICON_FILE`
