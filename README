@@ -152,7 +152,12 @@ Autogeili 安装及使用说明
  	https://github.com/richard-ma/autogeili
 
 	Google Code
-	http://code.google.com/
+	http://code.google.com/ (已停止更新)
 	
 	以及所有为开源做出贡献的人们！
 
+##- 升级提示 -##
+
+update to 1.6:
+    * autogeili.sh改名为autogeili，如需使用原名，请自行创建符号链接。
+    * ln -s path/to/autogeili path/to/autogeili.sh
