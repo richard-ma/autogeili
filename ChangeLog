@@ -1,3 +1,7 @@
+2011-03-29 Richard Ma <richard.ma.198505059@gmail.com>
+	* Rename: autogeili.sh -> autogeili
+	* Tag: v1.6
+
 2011-02-16 Richard Ma <richard.ma.198505059@gmail.com>
 	* New Feature: Add delay download.
 	* New Feature: Add command line arguments praser.
