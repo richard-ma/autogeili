@@ -1,0 +1,62 @@
+2011-03-29 Richard Ma <richard.ma.198505059@gmail.com>
+	* Rename: autogeili.sh -> autogeili
+	* Tag: v1.6
+
+2011-02-16 Richard Ma <richard.ma.198505059@gmail.com>
+	* New Feature: Add delay download.
+	* New Feature: Add command line arguments praser.
+
+2011-02-02 Richard Ma <richard.ma.198505059@gmail.com>
+	* New Feature: Rebuild autogeili complete.
+	* New Feature: Add update complete notify.
+
+2011-01-27 Richard Ma <richard.ma.198505059@gmail.com>
+	* New Feature: Rebuild autogeili.
+
+2011-01-23 Richard Ma <richard.ma.198505059@gmail.com>
+	* Tag: v1.0
+
+2011-01-20 Richard Ma <richard.ma.198505059@gmail.com>
+	* Makefile: Add Makefile.
+	* Milestone: First Debian DEB Package of autogeili.
+
+2011-01-15 Richard Ma <richard.ma.198505059@gmail.com>
+	* autogeili.sh: Add License information.
+	* autogeili.sh: New Feature: Change notify icon.
+	* Readme      : Add Readme file.
+
+2011-01-13 Richard Ma <richard.ma.198505059@gmail.com>
+	* autogeili.sh: Fix Bug: Add 1366x768 resolution.
+	* autogeili.sh: New Feature: Use api to get picture format.
+
+2011-01-04 Richard Ma <richard.ma.198505059@gmail.com>
+	* autogeili.sh: Modify URL vars deleartion.
+	* autogeili.sh: Use date command once.
+
+2011-01-03 Richard Ma <richard.ma.198505059@gmail.com>
+	* autogeili.sh: Fix bug: Date format.
+
+2010-12-27 Richard Ma <richard.ma.198505059@gmail.com>
+	* autogeili.sh: change Constants name.
+	* dev/: add develop directory.
+	* icons/: add icons directory.
+
+2010-12-22 Richard Ma <richard.ma.198505059@gmail.com>
+
+	* autogeili.sh: Fix bug: resolution 1280x1024 ( 5: 4) autodetect.
+	* ChangeLog: 	Add ChangeLog
+	* autogeili.sh: Add date config file to avoid download many times from
+	server in one day.
+	* autogeili.sh: Fix bug: new wallpaper display problem.
+
+2010-12-21 Richard Ma <richard.ma.198505059@gmail.com>
+
+	* autogeili.sh: New Feature resolution autodetect.
+	* autogeili.sh: Add user setting the temp directory.
+	* autogeili.sh: Change temp file today.xxx to .today.xxx.
+	* install.sh:	Add install.sh
+	* autogeili.sh: Fix bug: download failed.
+	* autogeili.sh: Fix bug: change gconftool to gconftool-2.
+
+2010-12-20 Richard Ma <richard.ma.198505059@gmail.com>
+	* autogeili.sh: Initalize this project.
