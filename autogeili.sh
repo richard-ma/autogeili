@@ -21,15 +21,10 @@
 
 readonly TIME_NOW_DATE=`date +%Y.%-m.%-d`
 
-if [[ ! $1 ]];then
-	IMG_DATE_PREFIX=$TIME_NOW_DATE
+if [[ ! $1 ]] || [[ ! $1 =~ ^[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2} ]];then
+    IMG_DATE_PREFIX=$TIME_NOW_DATE
 else
-	echo $1 | grep -Eqi '^[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}' 
-	if [[ $? -eq 0 ]];then
-		IMG_DATE_PREFIX=$1
-	else
-		IMG_DATE_PREFIX=$TIME_NOW_DATE
-	fi
+    IMG_DATE_PREFIX=$1
 fi
 
 readonly IMG_MONTH_PREFIX=`echo $IMG_DATE_PREFIX | cut -d '.' -f -2`
