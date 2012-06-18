@@ -20,7 +20,19 @@
 # =============================================================================
 
 readonly TIME_NOW_DATE=`date +%Y.%-m.%-d`
-readonly TIME_NOW_MONTH=`date +%Y.%-m`
+
+if [[ ! $1 ]];then
+	IMG_DATE_PREFIX=$TIME_NOW_DATE
+else
+	echo $1 | grep -Eqi '^[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}' 
+	if [[ $? -eq 0 ]];then
+		IMG_DATE_PREFIX=$1
+	else
+		IMG_DATE_PREFIX=$TIME_NOW_DATE
+	fi
+fi
+
+readonly IMG_MONTH_PREFIX=`echo $IMG_DATE_PREFIX | cut -d '.' -f -2`
 
 readonly CONFIG_FILE=~/.autogeilirc
 readonly CONFIG_DIR=~/.autogeili
@@ -32,13 +44,13 @@ readonly DOMAIN_URL=wordsmotivate.me
 readonly IMG_PREFIX_URL=img
 readonly API_PREFIX_URL=api
 readonly API_SUFFIX_URL=WallpaperFormat.php
-readonly IMG_SUFFIX_URL=$TIME_NOW_MONTH/$TIME_NOW_DATE
+readonly IMG_SUFFIX_URL=$IMG_MONTH_PREFIX/$IMG_DATE_PREFIX
 readonly IMG_URL=http://$IMG_PREFIX_URL.$DOMAIN_URL/$IMG_SUFFIX_URL
 readonly API_URL=http://$API_PREFIX_URL.$DOMAIN_URL/$API_SUFFIX_URL
 
 readonly ICON_FILE=/usr/share/autogeili/autogeili-icon.png
 readonly GNOME_VERSION=`gnome-shell --version | awk '{print $3}' | awk 'BEGIN{FS="."}{print $1}'`
-readonly WALLPAPER_FILE_PREFIX=$CONFIG_DIR/$TIME_NOW_DATE
+readonly WALLPAPER_FILE_PREFIX=$CONFIG_DIR/$IMG_DATE_PREFIX
 
 # 
 # Function: autogeili_check_need_update
@@ -55,7 +67,7 @@ function autogeili_check_need_update()
 	config_file=$1
 
 	log_date=`cat $config_file | grep -i "last_update" | cut -d':' -f2`
-	today_date=$TIME_NOW_DATE
+	today_date=$IMG_DATE_PREFIX
 
 	if [ $log_date == $today_date ]; then
 		echo 1		# already updated
@@ -303,7 +315,7 @@ function main()
 	# 
 	# Update user profile
 	#
-	sed -i -e "s/^last_update:[0-9\.]*$/last_update:$TIME_NOW_DATE/g" $CONFIG_FILE 
+	sed -i -e "s/^last_update:[0-9\.]*$/last_update:$IMG_DATE_PREFIX/g" $CONFIG_FILE 
 
 	abs_var=`autogeili_notify "Update complete." $ICON_FILE`
 	return 0
