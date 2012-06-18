@@ -25,7 +25,6 @@ readonly TIME_NOW_MONTH=`date +%Y.%-m`
 readonly CONFIG_FILE=~/.autogeilirc
 readonly CONFIG_DIR=~/.autogeili
 
-readonly WALLPAPER_FILE=$CONFIG_DIR/wallpaper
 readonly WALLPAPER_TMP_FILE=$CONFIG_DIR/tmp_wallpaper
 readonly WALLPAPER_DOWNLOAD_FILE=$CONFIG_DIR/down_wallpaper
 
@@ -38,6 +37,8 @@ readonly IMG_URL=http://$IMG_PREFIX_URL.$DOMAIN_URL/$IMG_SUFFIX_URL
 readonly API_URL=http://$API_PREFIX_URL.$DOMAIN_URL/$API_SUFFIX_URL
 
 readonly ICON_FILE=/usr/share/autogeili/autogeili-icon.png
+readonly GNOME_VERSION=`gnome-shell --version | awk '{print $3}' | awk 'BEGIN{FS="."}{print $1}'`
+readonly WALLPAPER_FILE_PREFIX=$CONFIG_DIR/$TIME_NOW_DATE
 
 # 
 # Function: autogeili_check_need_update
@@ -79,18 +80,17 @@ function autogeili_check_need_update()
 # -----------------------------------------------------------------------------
 function autogeili_get_file_type()
 {
-	wget \
-		-c $API_URL \
-		-O $CONFIG_DIR/format.api
-	if [ $? -ne 0 ]; then
-		echo "unknown"
-		return
+	IMG_TYPE=`curl -m 5 $API_URL | awk 'BEGIN{FS=":"}{print $2}' | awk 'BEGIN{FS="["}{print $1}' | tr '[A-Z]' '[a-z]'`
+	[[ ! $IMG_TYPE ]] && [[ -f $CONFIG_DIR/format.api ]] && IMG_TYPE=`cat $CONFIG_DIR/format.api`
+	[[ ! $IMG_TYPE ]] && echo "unknown" && exit
+	if [ $IMG_TYPE != "jpg" ] && [ $IMG_TYPE != "png" ]; then
+		IMG_TYPE=`cat $CONFIG_DIR/format.api`
 	fi
-
-	IMG_TYPE=`cat $CONFIG_DIR/format.api | grep REQ_RESULT_END | cut -d'[' -f 1 | cut -d':' -f 2 | tr '[A-Z]' '[a-z]'`
-	rm $CONFIG_DIR/format.api
-
-	echo $IMG_TYPE
+	if [ $IMG_TYPE == "jpg" ] || [ $IMG_TYPE == "png" ]; then
+		echo $IMG_TYPE | tee $CONFIG_DIR/format.api
+	else
+		echo "unknown"
+	fi
 }
 
 # 
@@ -107,7 +107,6 @@ function autogeili_check_user_dir()
 {
 	if [ ! -e $CONFIG_DIR ]; then
 		mkdir -p $CONFIG_DIR
-		touch $WALLPAPER_FILE.jpg
 	fi
 
 	if [ ! -e $CONFIG_FILE ]; then
@@ -132,33 +131,37 @@ function autogeili_set_wallpaper()
 {
 	wallpaper=$1
 
-	while true
-	do
-		gconftool-2 \
-			--type string \
-			--set /desktop/gnome/background/picture_options "zoom"
-		if [ $? -ne 0 ]; then break; fi
-		gconftool-2 \
-			--type int 	\
-			--set /desktop/gnome/background/picture_opacity 100
-		if [ $? -ne 0 ]; then break; fi
-		gconftool-2 \
-			--type string \
-			--set /desktop/gnome/background/color_shading_type "solid"
-		if [ $? -ne 0 ]; then break; fi
-		gconftool-2 \
-			--type bool 	\
-			--set /desktop/gnome/background/draw_background true
-		if [ $? -ne 0 ]; then break; fi
-		gconftool-2 \
-			--type string \
-			--set /desktop/gnome/background/picture_filename "$wallpaper"
-		if [ $? -ne 0 ]; then break; fi
-
+	if [ $GNOME_VERSION == "3" ];then
+		gsettings set org.gnome.desktop.background picture-uri "file://$wallpaper"
 		echo 0
 		return
-	done;
-
+	else
+		while true
+		do
+			gconftool-2 \
+				--type string \
+				--set /desktop/gnome/background/picture_options "zoom"
+			if [ $? -ne 0 ]; then break; fi
+			gconftool-2 \
+				--type int 	\
+				--set /desktop/gnome/background/picture_opacity 100
+			if [ $? -ne 0 ]; then break; fi
+			gconftool-2 \
+				--type string \
+				--set /desktop/gnome/background/color_shading_type "solid"
+			if [ $? -ne 0 ]; then break; fi
+			gconftool-2 \
+				--type bool 	\
+				--set /desktop/gnome/background/draw_background true
+			if [ $? -ne 0 ]; then break; fi
+			gconftool-2 \
+				--type string \
+				--set /desktop/gnome/background/picture_filename "$wallpaper"
+			if [ $? -ne 0 ]; then break; fi
+			echo 0
+			return
+		done;
+	fi
 	echo 1
 }
 
@@ -208,8 +211,9 @@ function autogeili_notify()
 # -----------------------------------------------------------------------------
 function autogeili_autodetect_resolution()
 {
-	screen_width=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 1`
-	screen_height=`xrandr | grep \* | cut -d' ' -f 4 | cut -d'x' -f 2`
+        screen_all=(`xrandr|grep \*|awk '{print $1}'|awk 'BEGIN{FS="x"}{print $1,$2}'`)
+	screen_width=${screen_all[0]}
+        screen_height=${screen_all[1]}
 
 	if [ `expr $screen_width \* 5` -eq `expr $screen_height \* 8` ]; then
 		resolution="1920x1200"
@@ -252,7 +256,6 @@ function main()
 		abs_var=`autogeili_notify "Today's wallpaper has already been updated." $ICON_FILE`
 		return 2
  	fi
-
 	# 
 	# Get screen resolution.
 	#
@@ -278,45 +281,24 @@ function main()
 	#
 	wget \
 		-c $IMG_URL\_$resolution.$file_type \
-		-O $WALLPAPER_DOWNLOAD_FILE.$file_type
+		-P $CONFIG_DIR
 	if [ 0 -ne $? ]; then
 		abs_var=`autogeili_notify "Cann't download today wallpaper." $ICON_FILE`
 		return 5
 	fi
-
-	# 
-	# Detect yesterday wallpaper file type.
-	#
-	if [ -e $WALLPAPER_FILE.jpg ]; then
-		y_file_type="jpg"
-	elif [ -e $WALLPAPER_FILE.png ]; then
-		y_file_type="png"
-	else
-		abs_var=`autogeili_notify "Cann't find yesterday wallpaper." $ICON_FILE`
-		return 6
-	fi
-
-	# 
-	# Replace wallpaper.
-	#
-	cp $WALLPAPER_FILE.$y_file_type $WALLPAPER_TMP_FILE.$y_file_type
 
 	succ_flg=`autogeili_set_wallpaper $WALLPAPER_TMP_FILE.$y_file_type`
 	if [ 0 -ne $succ_flg ]; then
 		abs_var=`autogeili_notify "Cann't set wallpaper." $ICON_FILE`
 		return 7
 	fi
-	
-	rm $WALLPAPER_FILE.$y_file_type
-	mv $WALLPAPER_DOWNLOAD_FILE.$file_type $WALLPAPER_FILE.$file_type
 
-	succ_flg=`autogeili_set_wallpaper $WALLPAPER_FILE.$file_type`
+	WALLPAPER_FILE="${WALLPAPER_FILE_PREFIX}_${resolution}.$file_type"
+	succ_flg=`autogeili_set_wallpaper $WALLPAPER_FILE`
 	if [ 0 -ne $succ_flg ]; then
 		abs_var=`autogeili_notify "Cann't set wallpaper." $ICON_FILE`
 		return 8
 	fi
-
-	rm $WALLPAPER_TMP_FILE.$y_file_type
 
 	# 
 	# Update user profile
