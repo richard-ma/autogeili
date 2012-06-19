@@ -149,6 +149,8 @@ Autogeili 安装及使用说明
 	
 	以及所有为开源做出贡献的人们！
 
+    sailxjx - v1.7 添加对Gnome-shell v3的支持
+
 ##- 升级提示 -##
 
 update to 1.6:
