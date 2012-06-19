@@ -22,3 +22,18 @@ apt-get install libnotify-bin
 # Install x11-xserver-utils for xrandr
 # -----------------------------------------------------------------------------
 sudo apt-get install x11-xserver-utils
+
+# 
+# Install Files
+# -----------------------------------------------------------------------------
+install -d \
+	/usr/bin \
+	/usr/share/autogeili
+install -m 0644 icons/* /usr/share/autogeili
+install -m 0755 autogeili.sh /usr/bin
+
+# 
+# Create CONFIG_DIR and CONFIG_FILES
+# -----------------------------------------------------------------------------
+install -d \
+    ~/.autogeili
