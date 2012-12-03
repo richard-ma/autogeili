@@ -1,3 +1,6 @@
+这个项目停止维护
+The project is dead. -- richard\_ma
+
 Autogeili 安装及使用说明
 
 1.1 简介
